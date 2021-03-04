@@ -1,6 +1,10 @@
+import 'package:dice_game/dice_game/viewmodel/dice_game_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 enum DicePosition { left, right }
+
+final DiceGameViewModel diceCounter = DiceGameViewModel();
 
 class DiceGame extends StatelessWidget {
   @override
@@ -17,10 +21,15 @@ class DiceGame extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(
-                'Total',
-                style: Theme.of(context).textTheme.headline6,
-              ),
+              child: Observer(builder: (_) {
+                return Text(
+                  'Total = ${diceCounter.total}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline4
+                      .copyWith(color: Colors.deepPurpleAccent),
+                );
+              }),
             )
           ],
         ),
@@ -34,9 +43,12 @@ class DiceButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: FlatButton(
-        child: Image.asset('assets/images/dice4.png'),
-        onPressed: () {},
-        // onPressed :  diceCounter.roll ,
+        child: Observer(builder: (_) {
+          return Image.asset(
+              'assets/images/dice${dicePositionSelected == DicePosition.left ? diceCounter.left : diceCounter.right}.png');
+        }),
+        // onPressed: () {},
+        onPressed: diceCounter.roll,
       ),
     );
   }
